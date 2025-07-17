@@ -1,41 +1,34 @@
 {
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-24.11";
     flake-utils = {
       url = "github:numtide/flake-utils";
     };
     nixos-generators = {
       url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     dpanel = {
       url = "github:dogebox-wg/dpanel";
-      inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
 
     dogeboxd = {
       url = "github:dogebox-wg/dogeboxd";
-      inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
       inputs.dpanel-src.follows = "dpanel";
     };
 
     dkm = {
       url = "github:dogebox-wg/dkm";
-      inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
 
     dogebox-nur-packages = {
       url = "github:dogebox-wg/dogebox-nur-packages";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
   outputs =
