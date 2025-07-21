@@ -21,7 +21,7 @@
     };
 
     dogeboxd = {
-      url = "github:dogebox-wg/dogeboxd";
+      url = "github:dogebox-wg/dogeboxd/feature/import-blockchain";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
       inputs.dpanel-src.follows = "dpanel";
