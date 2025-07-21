@@ -40,6 +40,9 @@ in
   # Disable password auth by default for remote (ssh) connections, this won't effect local logins.
   services.openssh.settings.PasswordAuthentication = false;
 
+  # Automatically mount USB drives
+  services.udisks2.enable = true;
+
   security.sudo.wheelNeedsPassword = false;
 
   # These will be overridden by the included dogebox.nix file above, but set defaults.
