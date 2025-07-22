@@ -56,15 +56,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1752941288,
-        "narHash": "sha256-wovCJBgDsgNskWvdPn/8oBvgOsCBrQdP2fXTfr8vcmc=",
+        "lastModified": 1753172556,
+        "narHash": "sha256-iXl1EP7Ij058cdN5wYzOp1/DPsROcAKWlGpuvj0Xycg=",
         "owner": "dogebox-wg",
         "repo": "dogeboxd",
-        "rev": "c11ec90aefb0d0463e1dea5f2f7d023655c8d407",
+        "rev": "d8506aee7337674ad8934d60ec1199d7a011a3dc",
         "type": "github"
       },
       "original": {
         "owner": "dogebox-wg",
+        "ref": "feature/import-blockchain",
         "repo": "dogeboxd",
         "type": "github"
       }
@@ -80,11 +81,11 @@
         "playwright": "playwright"
       },
       "locked": {
-        "lastModified": 1752858669,
-        "narHash": "sha256-wvP6vaRXGGz340HUV1uYRt3DoqAcXcN8fdGGm9xFHxM=",
+        "lastModified": 1753111376,
+        "narHash": "sha256-IZu7sKQ1YCa4kHo47t60mjVhR3BXNTm33DbBzCsasVU=",
         "owner": "dogebox-wg",
         "repo": "dpanel",
-        "rev": "0c0308f91b4670939efe6ec1f84fec361763926a",
+        "rev": "30dc8fe09cfd39def59dc272f5bedb13489c9204",
         "type": "github"
       },
       "original": {
