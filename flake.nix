@@ -53,6 +53,7 @@
         iso = ./nix/builders/iso/base.nix;
         qemu = ./nix/builders/qemu/base.nix;
         nanopc-t6 = ./nix/builders/nanopc-t6/base.nix;
+        rpi = ./nix/builders/rpi/base.nix;
       };
 
       getCopyFlakeScript =
@@ -315,6 +316,7 @@
           t6 = base "aarch64" "nanopc-t6" ./nix/builders/nanopc-t6/builder.nix "raw";
           iso = base "aarch64" "iso" ./nix/builders/iso/builder.nix "iso";
           qemu = qemu-aarch64;
+          rpi = base "aarch64" "rpi" ./nix/builders/rpi/builder.nix "sd-aarch64";
         };
         x86_64-linux = {
           iso = base "x86_64" "iso" ./nix/builders/iso/builder.nix "iso";
