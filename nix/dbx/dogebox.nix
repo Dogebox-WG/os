@@ -26,22 +26,22 @@ in
     password = "suchpass";
   };
 
-
   systemd.services.force-password-change = {
     description = "Force password change for shibe on first boot";
     wantedBy = [ "multi-user.target" ];
     before = [ "getty@tty1.service" ];
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "[ ! -s /opt/passwd-changed ] && /run/current-system/sw/bin/chage -d 0 shibe && touch /opt/passwd-changed";
+      ExecStart = let
+        script = pkgs.writeScript "force-passwd-change" ''
+          #!${pkgs.runtimeShell}
+          [ ! -f "/opt/passwd-changed" ] && /run/current-system/sw/bin/chage -d 0 shibe && touch /opt/passwd-changed'';
+        in "${script}";
     };
   };
 
   # Disable password auth by default for remote (ssh) connections, this won't effect local logins.
   services.openssh.settings.PasswordAuthentication = false;
-
-  # Automatically mount USB drives
-  services.udisks2.enable = true;
 
   security.sudo.wheelNeedsPassword = false;
 
