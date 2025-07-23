@@ -33,12 +33,15 @@ in
     before = [ "getty@tty1.service" ];
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "/run/current-system/sw/bin/chage -d 0 shibe";
+      ExecStart = "[ ! -s /opt/passwd-changed ] && /run/current-system/sw/bin/chage -d 0 shibe && touch /opt/passwd-changed";
     };
   };
 
   # Disable password auth by default for remote (ssh) connections, this won't effect local logins.
   services.openssh.settings.PasswordAuthentication = false;
+
+  # Automatically mount USB drives
+  services.udisks2.enable = true;
 
   security.sudo.wheelNeedsPassword = false;
 
