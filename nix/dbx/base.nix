@@ -39,7 +39,7 @@
   };
 
   # Set your time zone.
-  time.timeZone = "Australia/Brisbane";
+  time.timeZone = lib.mkDefault "Australia/Brisbane";
 
   environment.systemPackages = with pkgs; [
     # Install a few utility packages

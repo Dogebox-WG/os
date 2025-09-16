@@ -1,4 +1,4 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, devMode, ... }:
 
 let
   remoteRebuildTarget = builtins.getEnv "REMOTE_REBUILD_DOGEBOX_DIRECTORY";
@@ -18,15 +18,19 @@ in
 
   users.groups.dogebox = { };
 
-  users.users.shibe = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "dogebox" ];
+  # Only enable the shibe user if we're not in dev mode.
+  users.users = lib.mkIf (!devMode) {
+    shibe = {
+      isNormalUser = true;
+      extraGroups = [ "wheel" "dogebox" ];
 
-    # Temporary, we force the user to change their password on first login.
-    password = "suchpass";
+      # Temporary, we force the user to change their password on first login.
+      password = "suchpass";
+    };
   };
 
   systemd.services.force-password-change = {
+    enable = !devMode;
     description = "Force password change for shibe on first boot";
     wantedBy = [ "multi-user.target" ];
     before = [ "getty@tty1.service" ];

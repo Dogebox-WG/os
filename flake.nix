@@ -53,6 +53,7 @@
         iso = ./nix/builders/iso/base.nix;
         qemu = ./nix/builders/qemu/base.nix;
         nanopc-t6 = ./nix/builders/nanopc-t6/base.nix;
+        dev = ./nix/builders/dev/base.nix;
       };
 
       getCopyFlakeScript =
@@ -142,12 +143,14 @@
           )
         ];
 
-      getSpecialArgs = arch: system: builderType: {
+      getSpecialArgs = arch: system: builderType: devMode: devBootloader: {
         inherit
           inputs
           dbxRelease
           builderType
           arch
+          devMode
+          devBootloader
           ;
 
         # These are the built packages, rather than the raw sources.
@@ -158,8 +161,16 @@
         nanopc-t6-rk3588-firmware = inputs.dogebox-nur-packages.legacyPackages.${system}.rk3588-firmware;
       };
 
+      # This is exported as a library function, that is consumed by our
+      # dogebox-wg/dev flake to allow easier development. There's things here
+      # that are passed-in/available that our normal production flake doesn't use.
       mkNixosSystem =
-        { system, builderType }:
+        { 
+          system,
+          builderType,
+          devMode ? false,
+          devBootloader ? false
+        }:
         let
           arch = nixpkgs.lib.strings.removeSuffix "-linux" system;
           isBaseBuilder = false;
@@ -167,7 +178,7 @@
         nixpkgs.lib.nixosSystem {
           inherit system;
           modules = mkConfigModules { inherit system builderType isBaseBuilder; };
-          specialArgs = getSpecialArgs arch system builderType;
+          specialArgs = getSpecialArgs arch system builderType devMode devBootloader;
         };
 
       base =
@@ -175,13 +186,15 @@
         let
           system = arch + "-linux";
           isBaseBuilder = false;
+          devMode = false;
+          devBootloader = false;
         in
         nixos-generators.nixosGenerate {
           inherit system format;
           modules = [
             builderSpecificModule
           ] ++ (mkConfigModules { inherit system builderType isBaseBuilder; });
-          specialArgs = getSpecialArgs arch system builderType;
+          specialArgs = getSpecialArgs arch system builderType devMode devBootloader;
         };
 
       ## Development Scripts & tools below this point.
@@ -310,6 +323,10 @@
       devForAllSystems = nixpkgs.lib.genAttrs devSupportedSystems;
     in
     {
+      lib = {
+        inherit mkNixosSystem;
+      };
+
       packages = {
         aarch64-linux = {
           t6 = base "aarch64" "nanopc-t6" ./nix/builders/nanopc-t6/builder.nix "raw";
@@ -343,6 +360,7 @@
           system = "aarch64-linux";
           builderType = "nanopc-t6";
         };
+
       };
 
       devShells = devForAllSystems (system: {
