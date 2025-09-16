@@ -10,16 +10,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1754269774,
+        "lastModified": 1754622765,
         "narHash": "sha256-F9Gy6okuHcqZMDziThgdogQjWqkyfuelar6VEJH6rKo=",
         "owner": "dogebox-wg",
         "repo": "dkm",
-        "rev": "fed35db021f9d1838356ce613091e89f9b458c9a",
+        "rev": "02e01a603c105c3cb1efb00b2bd35df6a0d409fc",
         "type": "github"
       },
       "original": {
         "owner": "dogebox-wg",
-        "ref": "chore/nixos-25.05",
         "repo": "dkm",
         "type": "github"
       }
@@ -57,16 +56,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1754269720,
-        "narHash": "sha256-FzdcCyE4TSPWx7tooiAwOWEURui0QP9uF/vRogGR00E=",
+        "lastModified": 1755182118,
+        "narHash": "sha256-A2rKRB7q7S+EGHEHo64VkjoFqAvzJOdFRbPpqXef9g0=",
         "owner": "dogebox-wg",
         "repo": "dogeboxd",
-        "rev": "53b345bf975f5a19e76456b35349f987849441c0",
+        "rev": "6d4220c5088d3cf08952e3617b6c0d7cf45dcff9",
         "type": "github"
       },
       "original": {
         "owner": "dogebox-wg",
-        "ref": "chore/nixos-25.05",
         "repo": "dogeboxd",
         "type": "github"
       }
@@ -82,16 +80,15 @@
         "playwright": "playwright"
       },
       "locked": {
-        "lastModified": 1754269743,
-        "narHash": "sha256-OPibpkLXGvynSdTCd5swBCHT6huMwgobAKf75GkgT28=",
+        "lastModified": 1756340807,
+        "narHash": "sha256-u6oU5bup59eUcLEYjnQ00VmS2FwSTB4kRR1teF7HM8U=",
         "owner": "dogebox-wg",
         "repo": "dpanel",
-        "rev": "f2e24cf69de0fee67b1ab6b529e1a78e6b6b38b9",
+        "rev": "54d8366aab9ff5e70777480163d377ba9978c926",
         "type": "github"
       },
       "original": {
         "owner": "dogebox-wg",
-        "ref": "chore/nixos-25.05",
         "repo": "dpanel",
         "type": "github"
       }

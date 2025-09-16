@@ -3,6 +3,7 @@
   lib,
   pkgs,
   dogeboxd,
+  devMode,
   ...
 }:
 
@@ -48,6 +49,7 @@
   ];
 
   systemd.services.dogeboxd = {
+    enable = !devMode;
     after = [ "systemd-networkd-wait-online.service" ];
     wants = [ "systemd-networkd-wait-online.service" ];
     wantedBy = [ "multi-user.target" ];
