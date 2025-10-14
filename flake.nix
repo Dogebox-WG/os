@@ -361,6 +361,16 @@
           builderType = "nanopc-t6";
         };
 
+        dogeboxos-dev-aarch64 = mkNixosSystem {
+          system = "aarch64-linux";
+          builderType = "dev";
+        };
+
+        dogeboxos-dev-x86_64 = mkNixosSystem {
+          system = "x86_64-linux";
+          builderType = "dev";
+        };
+
       };
 
       devShells = devForAllSystems (system: {
