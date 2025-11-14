@@ -1,0 +1,131 @@
+name: Build and Release Dogebox OS
+
+on:
+  push:
+    tags:
+      - "v*.*.*" # e.g. v1.2.3
+
+jobs:
+  build-x86-iso:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write # needed for release creation/uploads
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-25.05
+          install_url: https://releases.nixos.org/nix/nix-2.32.1/install
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            system-features = nixos-test benchmark big-parallel kvm
+      - name: Build Dogebox OS
+        run: |
+          nix build .#packages.x86_64-linux.iso -o result-x86_64-linux-iso
+          echo "Copying artefacts"
+          mkdir -p artifacts
+          cp ./result-x86_64-linux-iso/iso/*.iso artifacts/
+      - name: Create Release (if not exists)
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "Dogebox OS ${{ github.ref_name }}"
+          draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          tag_name: ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-aarch64-iso:
+    runs-on: ubuntu-24.04-arm
+
+    permissions:
+      contents: write # needed for release creation/uploads
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-25.05
+          install_url: https://releases.nixos.org/nix/nix-2.32.1/install
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            system-features = nixos-test benchmark big-parallel kvm
+      - name: Build Dogebox OS
+        run: |
+          nix build .#packages.aarch64-linux.iso -o result-aarch64-linux-iso
+          echo "Copying artefacts"
+          mkdir -p artifacts
+          cp ./result-aarch64-linux-iso/iso/*.iso artifacts/
+      - name: Create Release (if not exists)
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "Dogebox OS ${{ github.ref_name }}"
+          draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          tag_name: ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-t6:
+    runs-on: ubuntu-24.04-arm
+
+    permissions:
+      contents: write # needed for release creation/uploads
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-25.05
+          install_url: https://releases.nixos.org/nix/nix-2.32.1/install
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            system-features = nixos-test benchmark big-parallel kvm
+      - name: Build Dogebox OS T6
+        run: |
+          nix build .#packages.aarch64-linux.t6 -o result-t6
+          echo "Copying artefacts"
+          mkdir -p artifacts
+          cp ./result-t6/*.img artifacts/
+          echo "Compressing t6 image..."
+          gzip -9 artifacts/*.img
+      - name: Create Release (if not exists)
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "Dogebox OS ${{ github.ref_name }}"
+          draft: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Assets
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/*
+          tag_name: ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
