@@ -25,13 +25,43 @@ declare -A partition_uuid=(
     [rootfs]='AF12D156-5D5B-4EE3-B415-8D492CA12EA9'
 );
 
+IN=$(cat parameter.txt | grep '^CMDLINE:' | cut -d: -f3);
+IFS=, read -ra DATA <<< $IN
+
+# Ensure IMAGE_SIZE is big enough for rootfs + backup GPT
+ROOTFS_END=0
+for i in "${DATA[@]}"; do
+    partition_info=($(echo $i | sed -r 's/-/0x0/' | sed -r 's/(.*)\@(.*)\((.*)/\1 \2 \3/' | sed -r 's/\)//'))
+    SIZE=$(( ${partition_info[0]} ))
+    START=$(( ${partition_info[1]} ))
+    NAME=${partition_info[2]}
+
+    if [[ $NAME == 'rootfs' ]]; then
+        if [[ ! -f "rootfs-raw.img" && -f "rootfs.img" ]]; then
+            echo "Expanding sparse image for rootfs"
+            simg2img rootfs.img rootfs-raw.img
+        fi
+        if [[ -f "rootfs-raw.img" ]]; then
+            SIZE=$(POSIXLY_CORRECT=1 du --apparent-size --block-size=512 rootfs-raw.img | cut -f1)
+        fi
+        ROOTFS_END=$(( START + SIZE ))
+        break
+    fi
+done
+
+if [[ $ROOTFS_END -gt 0 ]]; then
+    LAST_USABLE=$(( IMAGE_SIZE - 34 ))
+    if [[ $ROOTFS_END -gt $LAST_USABLE ]]; then
+        IMAGE_SIZE=$(( ROOTFS_END + 34 ))
+        echo "Adjusting IMAGE_SIZE to $IMAGE_SIZE sectors to fit rootfs and GPT"
+    fi
+fi
+
 dd if=/dev/zero of=${IMAGE_FILE} count=0 seek=${IMAGE_SIZE}
 parted -s ${IMAGE_FILE} mklabel gpt
 dd if=./idbloader.img of=${IMAGE_FILE} seek=64 conv=notrunc
 
 PARTITION_NUMBER=1;
-IN=$(cat parameter.txt | grep '^CMDLINE:' | cut -d: -f3);
-IFS=, read -ra DATA <<< $IN
 
 for i in "${DATA[@]}"; do
     partition_info=($(echo $i | sed -r 's/-/0x0/' | sed -r 's/(.*)\@(.*)\((.*)/\1 \2 \3/' | sed -r 's/\)//'))
@@ -45,7 +75,7 @@ for i in "${DATA[@]}"; do
             echo "Expanding sparse image for rootfs"
             simg2img rootfs.img rootfs-raw.img
         fi
-        SIZE=$(POSIXLY_CORRECT=1 du --apparent-size rootfs-raw.img | cut -f1)
+        SIZE=$(POSIXLY_CORRECT=1 du --apparent-size --block-size=512 rootfs-raw.img | cut -f1)
         echo "Actual size $SIZE"
         echo "Writing rootfs"
         dd if=rootfs-raw.img of=${IMAGE_FILE} seek=${START} conv=notrunc
