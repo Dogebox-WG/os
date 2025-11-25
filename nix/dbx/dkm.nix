@@ -3,6 +3,7 @@
   lib,
   pkgs,
   dkm,
+  devMode,
   ...
 }:
 
@@ -18,6 +19,7 @@
   ];
 
   systemd.services.dkm = {
+    enable = !devMode;
     after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
 

@@ -1,7 +1,16 @@
-{ lib, pkgs, ... }:
+{ lib, pkgs, devMode, ... }:
 
 let
   remoteRebuildTarget = builtins.getEnv "REMOTE_REBUILD_DOGEBOX_DIRECTORY";
+  defaultDataPath = /opt/dogebox;
+  devDatapathFile = /etc/nixos-dev/datapath;
+
+  dogeboxDataPath =
+    if builtins.pathExists devDatapathFile
+    then builtins.toPath (lib.removeSuffix "\n" (builtins.readFile devDatapathFile))
+    else defaultDataPath;
+
+  dogeboxDataNixPath = "${dogeboxDataPath}/nix/dogebox.nix";
 in
 {
   imports =
@@ -9,8 +18,8 @@ in
       ./dkm.nix
       ./dogeboxd.nix
     ]
-    ++ lib.optionals (builtins.pathExists "/opt/dogebox/nix/dogebox.nix") [
-      /opt/dogebox/nix/dogebox.nix
+    ++ lib.optionals (builtins.pathExists dogeboxDataNixPath) [
+      dogeboxDataNixPath
     ]
     ++ lib.optionals (remoteRebuildTarget != "") [
       "${remoteRebuildTarget}/dogebox.nix"
@@ -18,15 +27,19 @@ in
 
   users.groups.dogebox = { };
 
-  users.users.shibe = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "dogebox" ];
+  # Only enable the shibe user if we're not in dev mode.
+  users.users = lib.mkIf (!devMode) {
+    shibe = {
+      isNormalUser = true;
+      extraGroups = [ "wheel" "dogebox" ];
 
-    # Temporary, we force the user to change their password on first login.
-    password = "suchpass";
+      # Temporary, we force the user to change their password on first login.
+      password = "suchpass";
+    };
   };
 
   systemd.services.force-password-change = {
+    enable = !devMode;
     description = "Force password change for shibe on first boot";
     wantedBy = [ "multi-user.target" ];
     before = [ "getty@tty1.service" ];
