@@ -152,6 +152,20 @@
     };
   };
 
+  # Setup a Wi-Fi Access Point for initial configuration.
+  # This allows a user to configure the dogebox by only plugging in a power compatible
+  # Caveat: Upon configuring the OS with a proper Wi-Fi network, the user will have to reconnect
+  # to that network and probably also manually reload the dpanel page.
+  services.create_ap = {
+    enable = true;
+    settings = {
+      INTERNET_IFACE = "lo";
+      WIFI_IFACE = "wlP3p49s0";
+      SSID = "Dogebox";
+      PASSPHRASE = "SuchPass";
+    };
+  };
+
   systemd.services.resizerootfs = {
     description = "Expands root filesystem of boot device on first boot";
     unitConfig = {
