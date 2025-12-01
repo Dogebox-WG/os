@@ -79,41 +79,47 @@
   boot.loader.generic-extlinux-compatible.enable = true;
   boot.loader.timeout = 1;
 
-  boot.kernelPackages =
-    let
-      linux_rk3588_pkg =
-        {
-          fetchFromGitHub,
-          linuxManualConfig,
-          ubootTools,
-          ...
-        }:
-        (linuxManualConfig rec {
-          modDirVersion = "6.1.57";
-          version = modDirVersion;
+  # boot.kernelPackages =
+  #   let
+  #     linux_rk3588_pkg =
+  #       {
+  #         fetchFromGitHub,
+  #         linuxManualConfig,
+  #         ubootTools,
+  #         ...
+  #       }:
+  #       (linuxManualConfig rec {
+  #         modDirVersion = "6.1.57";
+  #         version = modDirVersion;
 
-          src = fetchFromGitHub {
-            owner = "friendlyarm";
-            repo = "kernel-rockchip";
-            rev = "85d0764ec61ebfab6b0d9f6c65f2290068a46fa1";
-            hash = "sha256-oGMx0EYfPQb8XxzObs8CXgXS/Q9pE1O5/fP7/ehRUDA=";
-          };
+  #         src = fetchFromGitHub {
+  #           owner = "friendlyarm";
+  #           repo = "kernel-rockchip";
+  #           rev = "85d0764ec61ebfab6b0d9f6c65f2290068a46fa1";
+  #           hash = "sha256-oGMx0EYfPQb8XxzObs8CXgXS/Q9pE1O5/fP7/ehRUDA=";
+  #         };
 
-          configfile = ./nanopc-T6_linux_defconfig;
-          allowImportFromDerivation = true;
-        }).overrideAttrs
-          (old: {
-            nativeBuildInputs = old.nativeBuildInputs ++ [ ubootTools ];
-            prePatch = ''
-              patch -p1 < ${./rk3588-nanopi6-common.dtsi.patch}
-              cp arch/arm64/boot/dts/rockchip/rk3588-nanopi6-rev01.dts arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
-              cp arch/arm64/boot/dts/rockchip/rk3588-nanopi6-rev07.dts arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6-lts.dts
-              sed -i "s/rk3588-nanopi6-rev0a.dtb/rk3588-nanopi6-rev0a.dtb\ rk3588-nanopc-t6.dtb\ rk3588-nanopc-t6-lts.dtb/" arch/arm64/boot/dts/rockchip/Makefile
-            '';
-          });
-      linux_rk3588 = pkgs.callPackage linux_rk3588_pkg { };
-    in
-    pkgs.recurseIntoAttrs (pkgs.linuxPackagesFor linux_rk3588);
+  #         configfile = ./nanopc-T6_linux_defconfig;
+  #         allowImportFromDerivation = true;
+  #       }).overrideAttrs
+  #         (old: {
+  #           nativeBuildInputs = old.nativeBuildInputs ++ [ ubootTools ];
+  #           prePatch = ''
+  #             patch -p1 < ${./rk3588-nanopi6-common.dtsi.patch}
+  #             cp arch/arm64/boot/dts/rockchip/rk3588-nanopi6-rev01.dts arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
+  #             cp arch/arm64/boot/dts/rockchip/rk3588-nanopi6-rev07.dts arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6-lts.dts
+  #             sed -i "s/rk3588-nanopi6-rev0a.dtb/rk3588-nanopi6-rev0a.dtb\ rk3588-nanopc-t6.dtb\ rk3588-nanopc-t6-lts.dtb/" arch/arm64/boot/dts/rockchip/Makefile
+  #           '';
+  #         });
+  #     linux_rk3588 = pkgs.callPackage linux_rk3588_pkg { };
+  #   in
+  #   pkgs.recurseIntoAttrs (pkgs.linuxPackagesFor linux_rk3588);
+  boot.kernelPatches = [
+    {
+      name = "rk2588-nanopc-t6.dtsi.patch";
+      patch = ./rk3588-nanopc-t6.dtsi.patch;
+    }
+  ];
 
   boot.initrd.availableKernelModules = [
     "nvme"
@@ -125,7 +131,7 @@
     "rtw88_pci"
     "rtw88_core"
   ];
-  boot.extraModulePackages = with config.boot.kernelPackages; [ rtw88 ];
+  boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
     device = "/dev/disk/by-label/nixos";
