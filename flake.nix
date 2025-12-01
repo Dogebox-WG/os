@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-25.05";
+    nixpkgs.url = "nixpkgs/nixos-25.11";
     flake-utils = {
       url = "github:numtide/flake-utils";
     };
@@ -65,20 +65,18 @@
           ${pkgs.rsync}/bin/rsync -a --delete --exclude='.git' "${self}/" "/etc/nixos/"
         '';
 
-      getSetOptScript =
-        builderType: isBaseBuilder:
-        ''
-          mkdir -p /opt
-          echo '${builderType}' > /opt/build-type
+      getSetOptScript = builderType: isBaseBuilder: ''
+        mkdir -p /opt
+        echo '${builderType}' > /opt/build-type
 
-          if [ -f /opt/dbx-installed ]; then
-            rm -f /opt/ro-media
-            touch /opt/rw-media
-          else
-            rm -f /opt/rw-media
-            touch /opt/ro-media
-          fi
-        '';
+        if [ -f /opt/dbx-installed ]; then
+          rm -f /opt/ro-media
+          touch /opt/rw-media
+        else
+          rm -f /opt/rw-media
+          touch /opt/ro-media
+        fi
+      '';
 
       versionScript =
         let
@@ -180,7 +178,8 @@
           inherit system format;
           modules = [
             builderSpecificModule
-          ] ++ (mkConfigModules { inherit system builderType isBaseBuilder; });
+          ]
+          ++ (mkConfigModules { inherit system builderType isBaseBuilder; });
           specialArgs = getSpecialArgs arch system builderType;
         };
 
@@ -260,7 +259,8 @@
           '';
         };
 
-      getSwitchRemoteHostScript = system:
+      getSwitchRemoteHostScript =
+        system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
           target = builtins.getEnv "TARGET";

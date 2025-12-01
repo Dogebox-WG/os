@@ -1,4 +1,5 @@
 {
+  config,
   pkgs,
   lib,
   nanopc-t6-rk3588-firmware,
@@ -15,12 +16,12 @@
 
       optee-os-rockchip-rk3588 = final.buildOptee {
         platform = "rockchip-rk3588";
-        version  = "4.6.0";
+        version = "4.6.0";
         src = final.fetchFromGitHub {
           owner = "OP-TEE";
-          repo  = "optee_os";
-          rev   = "4.6.0";
-          hash  = "sha256-4z706DNfZE+CAPOa362CNSFhAN1KaNyKcI9C7+MRccs=";
+          repo = "optee_os";
+          rev = "4.6.0";
+          hash = "sha256-4z706DNfZE+CAPOa362CNSFhAN1KaNyKcI9C7+MRccs=";
         };
         extraMakeFlags = [
           "CFG_TEE_CORE_LOG_LEVEL=0"
@@ -35,9 +36,9 @@
         version = "4.6.0";
         src = final.fetchFromGitHub {
           owner = "OP-TEE";
-          repo  = "optee_client";
-          rev   = "4.6.0";
-          hash  = "sha256-hHEIn0WU4XfqwZbOdg9kwSDxDcvK7Tvxtelamfc3IRM=";
+          repo = "optee_client";
+          rev = "4.6.0";
+          hash = "sha256-hHEIn0WU4XfqwZbOdg9kwSDxDcvK7Tvxtelamfc3IRM=";
         };
       });
 
@@ -46,18 +47,25 @@
           sed -i 's/#define FDT_BUFFER_SIZE 0x20000/#define FDT_BUFFER_SIZE 0x60000/g' \
             plat/rockchip/common/params_setup.c
         '';
-        makeFlags = old.makeFlags ++ [ "SPD=opteed" "LOG_LEVEL=40" "bl31" ];
+        makeFlags = old.makeFlags ++ [
+          "SPD=opteed"
+          "LOG_LEVEL=40"
+          "bl31"
+        ];
       });
 
       ubootNanoPCT6 = super.buildUBoot {
-        defconfig           = "nanopc-t6-rk3588_defconfig";
+        defconfig = "nanopc-t6-rk3588_defconfig";
         extraMeta.platforms = [ "aarch64-linux" ];
         extraMakeFlags = [
           "BL31=${pkgs.armTrustedFirmwareRK3588}/bl31.elf"
           "ROCKCHIP_TPL=${pkgs.rkbin.TPL_RK3588}"
           "TEE=${final.optee-os-rockchip-rk3588}/tee.bin"
         ];
-        filesToInstall = [ "u-boot.itb" "idbloader.img" ];
+        filesToInstall = [
+          "u-boot.itb"
+          "idbloader.img"
+        ];
       };
     })
   ];
@@ -117,7 +125,7 @@
     "rtw88_pci"
     "rtw88_core"
   ];
-  boot.extraModulePackages = [ ];
+  boot.extraModulePackages = with config.boot.kernelPackages; [ rtw88 ];
 
   fileSystems."/" = {
     device = "/dev/disk/by-label/nixos";
@@ -153,27 +161,22 @@
   };
 
   # Setup a Wi-Fi Access Point for initial configuration.
-  # This allows a user to configure the dogebox by only plugging in a power compatible
-  # Caveat: Upon configuring the OS with a proper Wi-Fi network, the user will have to reconnect
-  # to that network and probably also manually reload the dpanel page.
+  # This allows a user to configure the dogebox by only plugging in power
+  # Caveat: Upon configuring the OS with a proper Wi-Fi network, the user will
+  # have to reconnect to that network and manually reload the dpanel page.
   networking.wireless.enable = true;
-  networking.wlanInterfaces = {
-    "wlan-sta" = { device = "wlP3p49s0"; };
-    "wlan-ap" = { device = "wlP3p49s0"; mac = "08:11:96:0e:08:0a"; };
-  };
 
   services.create_ap = {
     enable = true;
     settings = {
       INTERNET_IFACE = "lo";
-      WIFI_IFACE = "wlan-ap";
+      WIFI_IFACE = "wlP3p49s0";
       SSID = "Dogebox";
       PASSPHRASE = "SuchPass";
     };
   };
 
-  networking.networkmanager.unmanaged = [ "interface-name:wlP*" "interface-name:wlan-ap" ];
-  networking.wireless.interfaces = [ "wlan-sta" ];
+  networking.wireless.interfaces = [ "wlP3p49s0" ];
 
   systemd.services.resizerootfs = {
     description = "Expands root filesystem of boot device on first boot";
