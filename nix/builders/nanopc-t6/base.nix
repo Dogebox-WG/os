@@ -79,6 +79,7 @@
   boot.loader.generic-extlinux-compatible.enable = true;
   boot.loader.timeout = 1;
 
+  boot.kernelPackages = pkgs.linuxPackages_6_17;
   # boot.kernelPackages =
   #   let
   #     linux_rk3588_pkg =
