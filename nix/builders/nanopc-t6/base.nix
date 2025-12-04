@@ -65,13 +65,15 @@
         filesToInstall = [
           "u-boot.itb"
           "idbloader.img"
+          "u-boot-rockchip.bin"
+          "u-boot-rockchip-spi.bin"
         ];
       };
     })
   ];
 
   # Show everything in the tty console instead of serial.
-  boot.kernelParams = [ "console=ttyFIQ0" ];
+  boot.kernelParams = [ "console=tty1" ];
 
   # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
   boot.loader.grub.enable = false;
@@ -79,7 +81,13 @@
   boot.loader.generic-extlinux-compatible.enable = true;
   boot.loader.timeout = 1;
 
-  boot.kernelPackages = pkgs.linuxPackages_6_17;
+  boot.kernelPackages = pkgs.linuxPackagesFor (
+    pkgs.linux_6_17.override {
+      argsOverride = rec {
+        configfile = ./nanopc-T6_linux_defconfig;
+      };
+    }
+  );
   # boot.kernelPackages =
   #   let
   #     linux_rk3588_pkg =
@@ -117,7 +125,7 @@
   #   pkgs.recurseIntoAttrs (pkgs.linuxPackagesFor linux_rk3588);
   boot.kernelPatches = [
     {
-      name = "rk2588-nanopc-t6.dtsi.patch";
+      name = "rk3588-nanopc-t6.dtsi.patch";
       patch = ./rk3588-nanopc-t6.dtsi.patch;
     }
   ];
