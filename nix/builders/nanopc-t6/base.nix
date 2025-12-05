@@ -1,4 +1,6 @@
 {
+  inputs,
+  config,
   pkgs,
   lib,
   nanopc-t6-rk3588-firmware,
@@ -15,12 +17,12 @@
 
       optee-os-rockchip-rk3588 = final.buildOptee {
         platform = "rockchip-rk3588";
-        version  = "4.6.0";
+        version = "4.6.0";
         src = final.fetchFromGitHub {
           owner = "OP-TEE";
-          repo  = "optee_os";
-          rev   = "4.6.0";
-          hash  = "sha256-4z706DNfZE+CAPOa362CNSFhAN1KaNyKcI9C7+MRccs=";
+          repo = "optee_os";
+          rev = "4.6.0";
+          hash = "sha256-4z706DNfZE+CAPOa362CNSFhAN1KaNyKcI9C7+MRccs=";
         };
         extraMakeFlags = [
           "CFG_TEE_CORE_LOG_LEVEL=0"
@@ -35,9 +37,9 @@
         version = "4.6.0";
         src = final.fetchFromGitHub {
           owner = "OP-TEE";
-          repo  = "optee_client";
-          rev   = "4.6.0";
-          hash  = "sha256-hHEIn0WU4XfqwZbOdg9kwSDxDcvK7Tvxtelamfc3IRM=";
+          repo = "optee_client";
+          rev = "4.6.0";
+          hash = "sha256-hHEIn0WU4XfqwZbOdg9kwSDxDcvK7Tvxtelamfc3IRM=";
         };
       });
 
@@ -46,24 +48,33 @@
           sed -i 's/#define FDT_BUFFER_SIZE 0x20000/#define FDT_BUFFER_SIZE 0x60000/g' \
             plat/rockchip/common/params_setup.c
         '';
-        makeFlags = old.makeFlags ++ [ "SPD=opteed" "LOG_LEVEL=40" "bl31" ];
+        makeFlags = old.makeFlags ++ [
+          "SPD=opteed"
+          "LOG_LEVEL=40"
+          "bl31"
+        ];
       });
 
       ubootNanoPCT6 = super.buildUBoot {
-        defconfig           = "nanopc-t6-rk3588_defconfig";
+        defconfig = "nanopc-t6-rk3588_defconfig";
         extraMeta.platforms = [ "aarch64-linux" ];
         extraMakeFlags = [
           "BL31=${pkgs.armTrustedFirmwareRK3588}/bl31.elf"
           "ROCKCHIP_TPL=${pkgs.rkbin.TPL_RK3588}"
           "TEE=${final.optee-os-rockchip-rk3588}/tee.bin"
         ];
-        filesToInstall = [ "u-boot.itb" "idbloader.img" ];
+        filesToInstall = [
+          "u-boot.itb"
+          "idbloader.img"
+          "u-boot-rockchip.bin"
+          "u-boot-rockchip-spi.bin"
+        ];
       };
     })
   ];
 
   # Show everything in the tty console instead of serial.
-  boot.kernelParams = [ "console=ttyFIQ0" ];
+  # boot.kernelParams = [ "console=tty1" ];
 
   # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
   boot.loader.grub.enable = false;
@@ -71,41 +82,14 @@
   boot.loader.generic-extlinux-compatible.enable = true;
   boot.loader.timeout = 1;
 
-  boot.kernelPackages =
-    let
-      linux_rk3588_pkg =
-        {
-          fetchFromGitHub,
-          linuxManualConfig,
-          ubootTools,
-          ...
-        }:
-        (linuxManualConfig rec {
-          modDirVersion = "6.1.57";
-          version = modDirVersion;
+  boot.kernelPackages = inputs.rockchip.legacyPackages.aarch64-linux.kernel_linux_latest_rockchip_stable;
 
-          src = fetchFromGitHub {
-            owner = "friendlyarm";
-            repo = "kernel-rockchip";
-            rev = "85d0764ec61ebfab6b0d9f6c65f2290068a46fa1";
-            hash = "sha256-oGMx0EYfPQb8XxzObs8CXgXS/Q9pE1O5/fP7/ehRUDA=";
-          };
-
-          configfile = ./nanopc-T6_linux_defconfig;
-          allowImportFromDerivation = true;
-        }).overrideAttrs
-          (old: {
-            nativeBuildInputs = old.nativeBuildInputs ++ [ ubootTools ];
-            prePatch = ''
-              patch -p1 < ${./rk3588-nanopi6-common.dtsi.patch}
-              cp arch/arm64/boot/dts/rockchip/rk3588-nanopi6-rev01.dts arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dts
-              cp arch/arm64/boot/dts/rockchip/rk3588-nanopi6-rev07.dts arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6-lts.dts
-              sed -i "s/rk3588-nanopi6-rev0a.dtb/rk3588-nanopi6-rev0a.dtb\ rk3588-nanopc-t6.dtb\ rk3588-nanopc-t6-lts.dtb/" arch/arm64/boot/dts/rockchip/Makefile
-            '';
-          });
-      linux_rk3588 = pkgs.callPackage linux_rk3588_pkg { };
-    in
-    pkgs.recurseIntoAttrs (pkgs.linuxPackagesFor linux_rk3588);
+  boot.kernelPatches = [
+    {
+      name = "rk3588-nanopc-t6.dtsi.patch";
+      patch = ./rk3588-nanopc-t6.dtsi.patch;
+    }
+  ];
 
   boot.initrd.availableKernelModules = [
     "nvme"
@@ -151,6 +135,24 @@
       userServices = true;
     };
   };
+
+  # Setup a Wi-Fi Access Point for initial configuration.
+  # This allows a user to configure the dogebox by only plugging in power
+  # Caveat: Upon configuring the OS with a proper Wi-Fi network, the user will
+  # have to reconnect to that network and manually reload the dpanel page.
+  networking.wireless.enable = true;
+
+  services.create_ap = {
+    enable = true;
+    settings = {
+      INTERNET_IFACE = "lo";
+      WIFI_IFACE = "wlP3p49s0";
+      SSID = "Dogebox";
+      PASSPHRASE = "SuchPass";
+    };
+  };
+
+  networking.wireless.interfaces = [ "wlP3p49s0" ];
 
   systemd.services.resizerootfs = {
     description = "Expands root filesystem of boot device on first boot";
