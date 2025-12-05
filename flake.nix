@@ -37,6 +37,8 @@
       url = "github:dogebox-wg/dogebox-nur-packages";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    rockchip = { url = "github:DivineGod/nixos-rockchip/feat/nanopc-t6"; };
   };
   outputs =
     {
