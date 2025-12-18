@@ -2,6 +2,7 @@
   inputs,
   pkgs,
   lib,
+  config,
   nanopc-t6-rk3588-firmware,
   ...
 }:
@@ -55,18 +56,8 @@
       });
 
       uBootNanoPCT6 = super.buildUBoot {
-        src = final.fetchFromGitHub {
-          owner = "u-boot";
-          repo = "u-boot";
-          rev = "v2025.01";
-          sha256 = "n63E3AHzbkn/SAfq+DHYDsBMY8qob+cbcoKgPKgE4ps=";
-        };
-        version = "v2025.01-1-ga79ebd4e16";
         defconfig = "nanopc-t6-rk3588_defconfig";
-        extraMeta = {
-          platforms = [ "aarch64-linux" ];
-          license = final.lib.licenses.unfreeRedistributableFirmware;
-        };
+        extraMeta.platforms = [ "aarch64-linux" ];
         extraMakeFlags = [
           "BL31=${pkgs.armTrustedFirmwareRK3588}/bl31.elf"
           "ROCKCHIP_TPL=${pkgs.rkbin.TPL_RK3588}"
@@ -75,8 +66,6 @@
         filesToInstall = [
           "u-boot.itb"
           "idbloader.img"
-          "u-boot-rockchip.bin"
-          "u-boot-rockchip-spi.bin"
         ];
       };
     })
@@ -114,7 +103,12 @@
     "rtw88_pci"
     "rtw88_core"
   ];
-  boot.extraModulePackages = [ ];
+
+  boot.extraModulePackages =
+    let
+      rtw88 = config.boot.kernelPackages.callPackage ./rtw88 { };
+    in
+    [ rtw88 ];
 
   fileSystems."/" = {
     device = "/dev/disk/by-label/nixos";
@@ -148,6 +142,24 @@
       userServices = true;
     };
   };
+
+  # Setup a Wi-Fi Access Point for initial configuration.
+  # This allows a user to configure the dogebox by only plugging in power
+  # Caveat: Upon configuring the OS with a proper Wi-Fi network, the user will
+  # have to reconnect to that network and manually reload the dpanel page.
+  networking.wireless.enable = true;
+
+  services.create_ap = {
+    enable = true;
+    settings = {
+      INTERNET_IFACE = "lo";
+      WIFI_IFACE = "wlP3p49s0";
+      SSID = "Dogebox";
+      PASSPHRASE = "SuchPass";
+    };
+  };
+
+  networking.wireless.interfaces = [ "wlP3p49s0" ];
 
   systemd.services.resizerootfs = {
     description = "Expands root filesystem of boot device on first boot";
