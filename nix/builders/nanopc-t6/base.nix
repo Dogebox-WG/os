@@ -102,6 +102,10 @@
       name = "rk3588-nanopc-t6.dtsi.patch";
       patch = ./rk3588-nanopc-t6.dtsi.patch;
     }
+    {
+      name = "pmic.patch";
+      patch = ./pmic.patch;
+    }
   ];
 
   boot.initrd.availableKernelModules = [
