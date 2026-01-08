@@ -1,0 +1,31 @@
+diff --git a/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dtsi b/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dtsi
+index fafeabe9a..bc05f4bba 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3588-nanopc-t6.dtsi
+@@ -12,6 +12,7 @@
+ #include <dt-bindings/pinctrl/rockchip.h>
+ #include <dt-bindings/soc/rockchip,vop2.h>
+ #include <dt-bindings/usb/pd.h>
++#include "rk8xx.h"
+ #include "rk3588.dtsi"
+ 
+ / {
+@@ -769,8 +770,16 @@ pmic@0 {
+ 		interrupts = <7 IRQ_TYPE_LEVEL_LOW>;
+ 
+ 		pinctrl-names = "default";
+-		pinctrl-0 = <&pmic_pins>, <&rk806_dvs1_null>,
+-			    <&rk806_dvs2_null>, <&rk806_dvs3_null>;
++		pinctrl-0 = <&pmic_pins>, <&rk806_dvs1_null>, <&rk806_dvs2_null>, <&rk806_dvs3_null>;
++
++		/* RK806_RESTART      0: restart PMU;
++		 * RK806_RESET        1: reset all the power off reset registers,
++		 *    forcing the state to switch to ACTIVE mode;
++		 * RK806_RESET_NOTIFY 2: Reset all the power off reset registers,
++		 *    forcing the state to switch to ACTIVE mode,
++		 *    and simultaneously pull down the RESETB PIN for 5mS before releasing
++		 */
++		rockchip,reset-mode = <RK806_RESET>;
+ 
+ 		system-power-controller;
+ 
