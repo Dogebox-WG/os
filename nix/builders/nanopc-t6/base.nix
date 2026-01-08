@@ -62,6 +62,12 @@
     {
       name = "rk3588-nanopc-t6.dtsi.patch";
       patch = ./rk3588-nanopc-t6.dtsi.patch;
+      extraConfig = ''
+        PINCTRL_RK805  y
+        RESET_GPIO y
+        POWER_RESET_GPIO y
+        POWER_RESET_GPIO_RESTART y
+      '';
     }
     {
       name = "pmic.patch";
@@ -185,4 +191,114 @@
     ln -sf ${nanopc-t6-rk3588-firmware}/lib/firmware/ /lib/firmware
     ln -sf ${nanopc-t6-rk3588-firmware}/system/ /system
   '';
+
+  hardware.deviceTree.overlays = [
+    {
+      name = "pmic-fix";
+      dtsText = ''
+          /dts-v1/;
+          /plugin/;
+
+          #include <dt-bindings/gpio/gpio.h>
+          #include <dt-bindings/pinctrl/rockchip.h>
+
+         	&{/spi2} {
+            compatible = "rockchip,rk3588";
+        		pmic@0 {
+             	compatible = "rockchip,rk806";
+         			pinctrl-names = "default", "pmic-power-off";
+         			pinctrl-1 = <&rk806_dvs1_pwrdn>;
+
+         			rockchip,reset-mode = <1>;
+
+         			pwrkey {
+        				status = "okay";
+         			};
+
+              /// START COPY
+              rk806_dvs1_null: dvs1-null-pins {
+          				pins = "gpio_pwrctrl2";
+          				function = "pin_fun0";
+         			};
+
+         			rk806_dvs2_null: dvs2-null-pins {
+          				pins = "gpio_pwrctrl2";
+          				function = "pin_fun0";
+         			};
+
+         			rk806_dvs3_null: dvs3-null-pins {
+          				pins = "gpio_pwrctrl3";
+          				function = "pin_fun0";
+         			};
+
+         			rk806_dvs1_slp: dvs1-slp-pins {
+          				pins = "gpio_pwrctrl1";
+          				function = "pin_fun1";
+         			};
+
+         			rk806_dvs2_slp: dvs2-slp-pins {
+          				pins = "gpio_pwrctrl2";
+          				function = "pin_fun1";
+         			};
+
+         			rk806_dvs3_slp: dvs3-slp-pins {
+          				pins = "gpio_pwrctrl3";
+          				function = "pin_fun1";
+         			};
+
+         			rk806_dvs1_pwrdn: dvs1-pwrdn-pins {
+          				pins = "gpio_pwrctrl1";
+          				function = "pin_fun2";
+         			};
+
+         			rk806_dvs2_pwrdn: dvs2-pwrdn-pins {
+          				pins = "gpio_pwrctrl2";
+          				function = "pin_fun2";
+         			};
+
+         			rk806_dvs3_pwrdn: dvs3-pwrdn-pins {
+          				pins = "gpio_pwrctrl3";
+          				function = "pin_fun2";
+         			};
+
+         			rk806_dvs1_rst: dvs1-rst-pins {
+          				pins = "gpio_pwrctrl1";
+          				function = "pin_fun3";
+         			};
+
+         			rk806_dvs2_rst: dvs2-rst-pins {
+          				pins = "gpio_pwrctrl2";
+          				function = "pin_fun3";
+         			};
+
+         			rk806_dvs3_rst: dvs3-rst-pins {
+          				pins = "gpio_pwrctrl3";
+          				function = "pin_fun3";
+         			};
+
+
+         			rk806_dvs2_dvs: dvs2-dvs-pins {
+          				pins = "gpio_pwrctrl2";
+          				function = "pin_fun4";
+         			};
+
+         			rk806_dvs2_gpio: dvs2-gpio-pins {
+          				pins = "gpio_pwrctrl2";
+          				function = "pin_fun5";
+         			};
+
+         			rk806_dvs3_dvs: dvs3-dvs-pins {
+          				pins = "gpio_pwrctrl3";
+          				function = "pin_fun4";
+         			};
+
+         			rk806_dvs3_gpio: dvs3-gpio-pins {
+          				pins = "gpio_pwrctrl3";
+          				function = "pin_fun5";
+         			};
+        		};
+          };
+      '';
+    }
+  ];
 }
