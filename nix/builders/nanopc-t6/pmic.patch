@@ -29,3 +29,14 @@ index fafeabe9a..bc05f4bba 100644
  
  		system-power-controller;
  
+@@ -1081,6 +1090,10 @@
+ 	status = "okay";
+ };
+ 
++&tsadc_shut_org {
++	rockchip,pins = <0 RK_PA1 1 &pcfg_pull_down_drv_level_0>;
++};
++
+ &uart2 {
+ 	pinctrl-0 = <&uart2m0_xfer>;
+ 	status = "okay";
