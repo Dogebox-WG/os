@@ -141,6 +141,7 @@ rec {
 
       getSpecialArgs = arch: system: builderType: devMode: devBootloader: {
         inherit
+          self
           inputs
           dbxRelease
           builderType
