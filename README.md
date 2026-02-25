@@ -40,7 +40,7 @@ Dogebox OS integrates several key components:
 
 ### Downloading Dogebox OS
 
-Pre-built images are available on our [GitHub Releases](https://github.com/dogeorg/dogebox/releases) page.
+Pre-built images are available on our [GitHub Releases](https://github.com/Dogebox-WG/dogebox/releases) page.
 
 ### Running Dogebox OS
 
@@ -102,7 +102,7 @@ Please visit **[dogebox.org](https://dogebox.org)**
 ## Community
 
 - **Discord**: [Join the DogeDev Discord](https://discord.gg/VEUMWpThg9)
-- **Issues**: [GitHub Issues](https://github.com/dogeorg/os/issues)
+- **Issues**: [GitHub Issues](https://github.com/Dogebox-WG/os/issues)
 
 ## Contributing
 
