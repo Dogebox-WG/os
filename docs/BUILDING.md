@@ -18,7 +18,7 @@ The SD images are built with a fork of FriendlyElec's sd-fuse_rk3588 for now. Th
 Clone sd-fuse and create a directory for the components
 
 ```
-git clone https://github.com/Dogebox-WG/sd-fuse_rk3588 https://github.com/Dogebox-WG/sd-fuse_rk3588.git
+git clone https://github.com/dogeorg/sd-fuse_rk3588 https://github.com/dogeorg/sd-fuse_rk3588.git
 cd sd-fuse_rk3588
 mkdir nixos-arm64
 ```
@@ -40,7 +40,7 @@ If aarch64 cross compiling is not set up, the build script shoul fail with instr
 
 ```
 cd out
-git clone https://github.com/Dogebox-WG/uboot-rockchip.git uboot-rk3588
+git clone https://github.com/dogeorg/uboot-rockchip.git uboot-rk3588
 cd uboot-rk3588
 git checkout nanopi6-v2017.09
 cd ../../
