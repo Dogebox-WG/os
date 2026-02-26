@@ -3,7 +3,10 @@ name: Build and Release Dogebox OS
 on:
   push:
     tags:
-      - "v*.*.*" # e.g. v1.2.3
+      - "v[0-9]+.[0-9]+.[0-9]+" # e.g. v1.2.3
+      - "v[0-9]+.[0-9]+.[0-9]+-alpha.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-beta.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+"
 
 jobs:
   build-x86-iso:
@@ -132,4 +135,3 @@ jobs:
           tag_name: ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
