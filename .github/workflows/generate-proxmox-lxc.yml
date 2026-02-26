@@ -32,7 +32,7 @@ jobs:
 
       - name: Add dogebox channel
         run: |
-          nix-channel --add https://github.com/dogeorg/dogebox-nur-packages/archive/main.tar.gz dogebox
+          nix-channel --add https://github.com/Dogebox-WG/dogebox-nur-packages/archive/main.tar.gz dogebox
           nix-channel --update
 
       - name: Generate LXC image
