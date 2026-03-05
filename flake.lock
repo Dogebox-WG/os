@@ -30,11 +30,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1770729774,
-        "narHash": "sha256-kYRAVKSOhfehld8bnTyMA0s5VVLdwM8AwPsnmuK+Po4=",
+        "lastModified": 1772469375,
+        "narHash": "sha256-Ypv36A585rj8o71o+kUCwUnDJThjDzX4uI3/BHTP4M0=",
         "owner": "dogebox-wg",
         "repo": "dogebox-nur-packages",
-        "rev": "ac89916eb322232181d50c860dbcd546bba77f78",
+        "rev": "9a7ea36df1d4716cf5386ee8a9c8056628b8e054",
         "type": "github"
       },
       "original": {
@@ -56,11 +56,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772079200,
-        "narHash": "sha256-So5aS1b55uIVI8RbplsnJI5f9gY/gbJiimE86tiNr1o=",
+        "lastModified": 1772747236,
+        "narHash": "sha256-yhjJEVAe8XH+MRP3J60g0PHfE98xFrDv/W5uPr4gntg=",
         "owner": "dogebox-wg",
         "repo": "dogeboxd",
-        "rev": "785fd736003401a627480cf4ce8747c71f427068",
+        "rev": "a0fe773271bd6f6c4650284a8dd36cd20a0a3d00",
         "type": "github"
       },
       "original": {
@@ -80,11 +80,11 @@
         "playwright": "playwright"
       },
       "locked": {
-        "lastModified": 1772145410,
-        "narHash": "sha256-0UWO8LgBo/HmKiIYFD4b3icokEeorPVVqUbxOLYazxY=",
+        "lastModified": 1772689975,
+        "narHash": "sha256-CSEvG3JyZWpHyasDtBy7LY4M0govN7EBh4hJkttrNVk=",
         "owner": "dogebox-wg",
         "repo": "dpanel",
-        "rev": "710fcded2ce817ab02bb21c997d3de20ad7af7f3",
+        "rev": "af54494e733a5c7f9dad170d0fcee5b3776343c9",
         "type": "github"
       },
       "original": {
@@ -232,11 +232,11 @@
     },
     "nixpkgsUnstable": {
       "locked": {
-        "lastModified": 1771369470,
-        "narHash": "sha256-0NBlEBKkN3lufyvFegY4TYv5mCNHbi5OmBDrzihbBMQ=",
+        "lastModified": 1772433332,
+        "narHash": "sha256-izhTDFKsg6KeVBxJS9EblGeQ8y+O8eCa6RcW874vxEc=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "0182a361324364ae3f436a63005877674cf45efb",
+        "rev": "cf59864ef8aa2e178cccedbe2c178185b0365705",
         "type": "github"
       },
       "original": {
@@ -248,11 +248,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1771903837,
-        "narHash": "sha256-sdaqdnsQCv3iifzxwB22tUwN/fSHoN7j2myFW5EIkGk=",
+        "lastModified": 1772598333,
+        "narHash": "sha256-YaHht/C35INEX3DeJQNWjNaTcPjYmBwwjFJ2jdtr+5U=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e764fc9a405871f1f6ca3d1394fb422e0a0c3951",
+        "rev": "fabb8c9deee281e50b1065002c9828f2cf7b2239",
         "type": "github"
       },
       "original": {
@@ -289,11 +289,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772024342,
-        "narHash": "sha256-+eXlIc4/7dE6EcPs9a2DaSY3fTA9AE526hGqkNID3Wg=",
+        "lastModified": 1772665116,
+        "narHash": "sha256-XmjUDG/J8Z8lY5DVNVUf5aoZGc400FxcjsNCqHKiKtc=",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "6e34e97ed9788b17796ee43ccdbaf871a5c2b476",
+        "rev": "39f53203a8458c330f61cc0759fe243f0ac0d198",
         "type": "github"
       },
       "original": {
@@ -309,11 +309,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1771872831,
-        "narHash": "sha256-RHvOG0g2uEaS2gh/1hKTJFVFbV6FD1jSZmO/nL58DYU=",
+        "lastModified": 1772476595,
+        "narHash": "sha256-JPYoCO1PpnP+HJyLmtJP8Zy4DrqY40ASEql/bjqoP6Y=",
         "owner": "nabam",
         "repo": "nixos-rockchip",
-        "rev": "7e1891e7c04b60541c904c404d99568f1786e474",
+        "rev": "0e393dc4942fdef059aeeb8fd8fa3b25d7a6cbee",
         "type": "github"
       },
       "original": {
