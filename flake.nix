@@ -51,7 +51,7 @@ rec {
       ...
     }@inputs:
     let
-      dbxRelease = "v0.9.0-rc.1";
+      dbxRelease = "v0.9.0-rc.2";
 
       builderBases = {
         iso = ./nix/builders/iso/base.nix;
