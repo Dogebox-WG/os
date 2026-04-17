@@ -52,7 +52,8 @@ rec {
     }@inputs:
     let
       envDbxRelease = builtins.getEnv "DBX_RELEASE";
-      dbxRelease = if envDbxRelease != "" then envDbxRelease else "v0.9.0-rc.3";
+      defaultDbxRelease = "v0.9.0-rc.3";
+      dbxRelease = if envDbxRelease != "" then envDbxRelease else defaultDbxRelease;
 
       builderBases = {
         iso = ./nix/builders/iso/base.nix;
