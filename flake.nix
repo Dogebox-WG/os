@@ -52,7 +52,7 @@ rec {
     }@inputs:
     let
       envDbxRelease = builtins.getEnv "DBX_RELEASE";
-      defaultDbxRelease = "v0.9.0-rc.3";
+      defaultDbxRelease = "v0.9.0-rc.4";
       dbxRelease = if envDbxRelease != "" then envDbxRelease else defaultDbxRelease;
 
       builderBases = {
