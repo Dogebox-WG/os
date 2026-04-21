@@ -15,7 +15,7 @@
     };
 
     dpanel = {
-      url = "github:dogebox-wg/dpanel";
+      url = "github:dogebox-wg/dpanel?ref=feature/backport-pre-release-updates-toggle";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
@@ -24,7 +24,7 @@
       url = "github:dogebox-wg/dogeboxd";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
-      inputs.dpanel-src.follows = "dpanel";
+      inputs.dpanel.follows = "dpanel";
     };
 
     dkm = {
