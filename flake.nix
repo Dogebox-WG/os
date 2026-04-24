@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
     flake-utils = {
       url = "github:numtide/flake-utils";
     };
@@ -21,10 +21,10 @@
     };
 
     dogeboxd = {
-      url = "github:dogebox-wg/dogeboxd";
+      url = "github:dogebox-wg/dogeboxd?ref=feature/backport-pre-release-updates-toggle";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
-      inputs.dpanel.follows = "dpanel";
+      inputs.dpanel-src.follows = "dpanel";
     };
 
     dkm = {
@@ -85,16 +85,6 @@
           flakeLock = ./flake.lock;
           flakeLockContent = builtins.readFile flakeLock;
           flakeLockJson = builtins.fromJSON flakeLockContent;
-
-          # We read these from the lock so that we only need to specify the flake
-          # name, rather than the full flake URL, which has to contain versioning info.
-          dbxdFlake = builtins.getFlake (
-            "github:dogebox-wg/dogeboxd/" + flakeLockJson.nodes.dogeboxd.locked.rev
-          );
-          dpanelFlake = builtins.getFlake (
-            "github:dogebox-wg/dpanel/" + flakeLockJson.nodes.dpanel.locked.rev
-          );
-          dkmFlake = builtins.getFlake ("github:dogebox-wg/dkm/" + flakeLockJson.nodes.dkm.locked.rev);
         in
         ''
           mkdir -p /opt/versioning
@@ -107,16 +97,16 @@
 
           # Write out info about our flake inputs for easy access.
           mkdir -p /opt/versioning/dogeboxd
-          echo '${dbxdFlake.rev}' > /opt/versioning/dogeboxd/rev
-          echo '${dbxdFlake.narHash}' > /opt/versioning/dogeboxd/hash
+          echo '${flakeLockJson.nodes.dogeboxd.locked.rev}' > /opt/versioning/dogeboxd/rev
+          echo '${flakeLockJson.nodes.dogeboxd.locked.narHash}' > /opt/versioning/dogeboxd/hash
 
           mkdir -p /opt/versioning/dkm
-          echo '${dkmFlake.rev}' > /opt/versioning/dkm/rev
-          echo '${dkmFlake.narHash}' > /opt/versioning/dkm/hash
+          echo '${flakeLockJson.nodes.dkm.locked.rev}' > /opt/versioning/dkm/rev
+          echo '${flakeLockJson.nodes.dkm.locked.narHash}' > /opt/versioning/dkm/hash
 
           mkdir -p /opt/versioning/dpanel
-          echo '${dpanelFlake.rev}' > /opt/versioning/dpanel/rev
-          echo '${dpanelFlake.narHash}' > /opt/versioning/dpanel/hash
+          echo '${flakeLockJson.nodes.dpanel.locked.rev}' > /opt/versioning/dpanel/rev
+          echo '${flakeLockJson.nodes.dpanel.locked.narHash}' > /opt/versioning/dpanel/hash
         '';
 
       dbxEntryModule = ./nix/dbx/base.nix;

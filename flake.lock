@@ -45,7 +45,7 @@
     },
     "dogeboxd": {
       "inputs": {
-        "dpanel": [
+        "dpanel-src": [
           "dpanel"
         ],
         "flake-utils": [
@@ -56,15 +56,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1776743529,
-        "narHash": "sha256-ArmQ/dShCodEvn9Dc3J4MI0AxrY6HOv+EFencddIAJI=",
+        "lastModified": 1776901535,
+        "narHash": "sha256-OE2RpCCgVMcPVjodNuhx1sljGe63/Y5eLrIHsh91ZQs=",
         "owner": "dogebox-wg",
         "repo": "dogeboxd",
-        "rev": "6c3e77cbd8033e66c592b8b9a3296314d961e3ca",
+        "rev": "32d13f22256dabb02b2a55adbd4c62dff1225f4a",
         "type": "github"
       },
       "original": {
         "owner": "dogebox-wg",
+        "ref": "feature/backport-pre-release-updates-toggle",
         "repo": "dogeboxd",
         "type": "github"
       }
@@ -80,11 +81,11 @@
         "playwright": "playwright"
       },
       "locked": {
-        "lastModified": 1776744072,
-        "narHash": "sha256-L3RbnNYs//6e8J8wxZrInpTEREKVbe2ClFzOdy8XOq4=",
+        "lastModified": 1776898488,
+        "narHash": "sha256-pGrJuL6S0mlKezUSAIjZ2EdHsa6BZZay9ice8LG1l6o=",
         "owner": "dogebox-wg",
         "repo": "dpanel",
-        "rev": "0c262c6fba16a51ca3f4eff89fc17e54a0582cea",
+        "rev": "8327bc1d962cb4286558e45f5749565b3ad9d074",
         "type": "github"
       },
       "original": {
@@ -113,24 +114,6 @@
     "flake-utils": {
       "inputs": {
         "systems": "systems"
-      },
-      "locked": {
-        "lastModified": 1726560853,
-        "narHash": "sha256-X6rJYSESBVr3hBoH0WbKE5KvhPU5bloyZ2L4K60/fPQ=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "c1dfcf08411b08f6b8615f7d8971a2bfa81d5e8a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "flake-utils_2": {
-      "inputs": {
-        "systems": "systems_2"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -205,18 +188,6 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 0,
-        "narHash": "sha256-u+rxA79a0lyhG+u+oPBRtTDtzz8kvkc9a6SWSt9ekVc=",
-        "path": "/nix/store/0283cbhm47kd3lr9zmc5fvdrx9qkav8s-source",
-        "type": "path"
-      },
-      "original": {
-        "id": "nixpkgs",
-        "type": "indirect"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
         "lastModified": 1767313136,
         "narHash": "sha256-16KkgfdYqjaeRGBaYsNrhPRRENs0qzkQVUooNHtoy2w=",
         "owner": "NixOS",
@@ -225,22 +196,29 @@
         "type": "github"
       },
       "original": {
-        "id": "nixpkgs",
+        "owner": "NixOS",
         "ref": "nixos-25.05",
-        "type": "indirect"
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "playwright": {
       "inputs": {
-        "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs"
+        "flake-utils": [
+          "dpanel",
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "dpanel",
+          "nixpkgs"
+        ]
       },
       "locked": {
-        "lastModified": 1744969290,
-        "narHash": "sha256-8pMFEdOT83u4VAIbnGOfnHvv5jNfRqZOnYjtQJaXkTs=",
+        "lastModified": 1776365128,
+        "narHash": "sha256-cJAyDCtnYRmNQyvBBJ1/Jgt/acgjUIDRSl3Sabv6oX8=",
         "owner": "pietdevries94",
         "repo": "playwright-web-flake",
-        "rev": "ceda34e26f2d0a939346c5d456afe69c9cf5250f",
+        "rev": "e288fd0c0dd79d37cc7fff81660ee34223325008",
         "type": "github"
       },
       "original": {
@@ -258,11 +236,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775585728,
-        "narHash": "sha256-8Psjt+TWvE4thRKktJsXfR6PA/fWWsZ04DVaY6PUhr4=",
+        "lastModified": 1776796298,
+        "narHash": "sha256-PcRvlWayisPSjd0UcRQbhG8Oqw78AcPE6x872cPRHN8=",
         "owner": "cachix",
         "repo": "pre-commit-hooks.nix",
-        "rev": "580633fa3fe5fc0379905986543fd7495481913d",
+        "rev": "3cfd774b0a530725a077e17354fbdb87ea1c4aad",
         "type": "github"
       },
       "original": {
@@ -277,28 +255,13 @@
         "dogebox-nur-packages": "dogebox-nur-packages",
         "dogeboxd": "dogeboxd",
         "dpanel": "dpanel",
-        "flake-utils": "flake-utils_2",
+        "flake-utils": "flake-utils",
         "nixos-generators": "nixos-generators",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "pre-commit-hooks": "pre-commit-hooks"
       }
     },
     "systems": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
-    "systems_2": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
