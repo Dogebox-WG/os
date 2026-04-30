@@ -51,9 +51,8 @@ rec {
       ...
     }@inputs:
     let
-      envDbxRelease = builtins.getEnv "DBX_RELEASE";
-      defaultDbxRelease = "v0.9.0-rc.4";
-      dbxRelease = if envDbxRelease != "" then envDbxRelease else defaultDbxRelease;
+      dbxRelease = "v0.9.0-rc.4";
+      upgradeFlakeDir = builtins.getEnv "DBX_UPGRADE_FLAKE_DIR";
 
       builderBases = {
         iso = ./nix/builders/iso/base.nix;
@@ -68,13 +67,13 @@ rec {
       isOSDeveloperMode = builtins.pathExists "/etc/nixos-dev";
 
       getCopyFlakeScript =
-        system: self:
+        system:
         let
           pkgs = nixpkgs.legacyPackages.${system};
         in
-        ''
+        nixpkgs.lib.optionalString (upgradeFlakeDir != "") ''
           mkdir -p /etc/nixos
-          ${pkgs.rsync}/bin/rsync -a --delete --exclude='.git' "${self}/" "/etc/nixos/"
+          ${pkgs.rsync}/bin/rsync -a --delete --exclude='.git' "${upgradeFlakeDir}/" "/etc/nixos/"
         '';
 
       getSetOptScript = builderType: isBaseBuilder: ''
@@ -134,7 +133,7 @@ rec {
           (
             { ... }:
             {
-              system.activationScripts.copyFlake = getCopyFlakeScript system self;
+              system.activationScripts.copyFlake = getCopyFlakeScript system;
               system.activationScripts.setOpt = getSetOptScript builderType isBaseBuilder;
               system.activationScripts.versioning = versionScript;
             }
