@@ -62,6 +62,16 @@
     {
       name = "rk3588-nanopc-t6.dtsi.patch";
       patch = ./rk3588-nanopc-t6.dtsi.patch;
+      extraConfig = ''
+        PINCTRL_RK805  y
+        RESET_GPIO y
+        POWER_RESET_GPIO y
+        POWER_RESET_GPIO_RESTART y
+      '';
+    }
+    {
+      name = "pmic.patch";
+      patch = ./pmic.patch;
     }
   ];
 
