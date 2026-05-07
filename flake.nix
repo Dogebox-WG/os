@@ -67,13 +67,14 @@ rec {
       isOSDeveloperMode = builtins.pathExists "/etc/nixos-dev";
 
       getCopyFlakeScript =
-        system:
+        system: self:
         let
           pkgs = nixpkgs.legacyPackages.${system};
+          flakeCopySource = if upgradeFlakeDir != "" then upgradeFlakeDir else self;
         in
-        nixpkgs.lib.optionalString (upgradeFlakeDir != "") ''
+        ''
           mkdir -p /etc/nixos
-          ${pkgs.rsync}/bin/rsync -a --delete --exclude='.git' "${upgradeFlakeDir}/" "/etc/nixos/"
+          ${pkgs.rsync}/bin/rsync -a --delete --exclude='.git' "${flakeCopySource}/" "/etc/nixos/"
         '';
 
       getSetOptScript = builderType: isBaseBuilder: ''
@@ -133,7 +134,7 @@ rec {
           (
             { ... }:
             {
-              system.activationScripts.copyFlake = getCopyFlakeScript system;
+              system.activationScripts.copyFlake = getCopyFlakeScript system self;
               system.activationScripts.setOpt = getSetOptScript builderType isBaseBuilder;
               system.activationScripts.versioning = versionScript;
             }
