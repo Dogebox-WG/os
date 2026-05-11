@@ -69,6 +69,7 @@
     "nvme"
     "usbhid"
   ];
+
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [
     "rtw88_8822ce"
@@ -119,19 +120,19 @@
   # This allows a user to configure the dogebox by only plugging in power
   # Caveat: Upon configuring the OS with a proper Wi-Fi network, the user will
   # have to reconnect to that network and manually reload the dpanel page.
-  networking.wireless.iwd.enable = true;
+  networking.wireless.enable = lib.mkDefault true;
 
   services.create_ap = {
     enable = lib.mkDefault true;
     settings = {
       INTERNET_IFACE = "lo";
-      WIFI_IFACE = "wlan0";
+      WIFI_IFACE = "wlP3p49s0";
       SSID = "Dogebox";
       PASSPHRASE = "SuchPass";
     };
   };
 
-  networking.wireless.interfaces = [ "wlan0" ];
+  networking.wireless.interfaces = [ "wlP3p49s0" ];
 
   systemd.services.resizerootfs = {
     description = "Expands root filesystem of boot device on first boot";
