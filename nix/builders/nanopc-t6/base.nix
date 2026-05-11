@@ -71,6 +71,9 @@
   ];
 
   boot.initrd.kernelModules = [ ];
+  # Load bearing backports in the rtw88 driver
+  # If these are removed, iwlist scan will crash
+  # https://github.com/lwfinger/rtw88/issues/418
   boot.kernelModules = [
     "rtw88_8822ce"
     "rtw88_pci"
