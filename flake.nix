@@ -51,7 +51,7 @@ rec {
       ...
     }@inputs:
     let
-      dbxRelease = "v0.9.0-rc.5";
+      dbxRelease = "v0.9.0-rc.6";
       upgradeFlakeDir = builtins.getEnv "DBX_UPGRADE_FLAKE_DIR";
 
       builderBases = {
