@@ -56,11 +56,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778655069,
-        "narHash": "sha256-gPYIPCYk/+/OkMzvOIrS0nyaVxQy5YA+oDxnZX9XN4Y=",
+        "lastModified": 1778817395,
+        "narHash": "sha256-U8/jG3pYogs/y3t5biI0VHeM6/s5T8dgIt9Y/xkpWss=",
         "owner": "dogebox-wg",
         "repo": "dogeboxd",
-        "rev": "15cf5470b4cfa1b70955b864d92c722eaf38ba11",
+        "rev": "fc0d85f70a204725bc18fb72ec0859cb98a791b2",
         "type": "github"
       },
       "original": {
@@ -309,11 +309,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1778527773,
-        "narHash": "sha256-Umpy6m3JUQBcRGsCWxrin5BpTmWM0dMvSDYbRD3fsXI=",
+        "lastModified": 1778778839,
+        "narHash": "sha256-r+I+PcldyvHACaGCT5MJQ3cC8eKa3rO1aDgj9ydSUt0=",
         "owner": "nabam",
         "repo": "nixos-rockchip",
-        "rev": "67d39c62c93801adb73c9168c8c8f6ffbcc47d26",
+        "rev": "cbbcbe6ab147b86c4cc316d5ea40d089aceb8456",
         "type": "github"
       },
       "original": {
