@@ -71,20 +71,6 @@
   ];
 
   boot.initrd.kernelModules = [ ];
-  # Load bearing backports in the rtw88 driver
-  # If these are removed, iwlist scan will crash
-  # https://github.com/lwfinger/rtw88/issues/418
-  boot.kernelModules = [
-    "rtw88_8822ce"
-    "rtw88_pci"
-    "rtw88_core"
-  ];
-
-  boot.extraModulePackages =
-    let
-      rtw88 = config.boot.kernelPackages.callPackage ./rtw88 { };
-    in
-    [ rtw88 ];
 
   fileSystems."/" = {
     device = "/dev/disk/by-label/nixos";
