@@ -92,12 +92,11 @@ rec {
       versionScript =
         system:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
           flakeLock = ./flake.lock;
           flakeLockContent = builtins.readFile flakeLock;
           migrationsJsonContent = builtins.toJSON {
             "pre_0.9_os_flake" = {
-              runs = 0;
+              ranSuccessfully = true;
               doNotRun = true;
             };
           };
@@ -126,26 +125,9 @@ rec {
 
           mkdir -p /opt/dogebox
           migrations_json_path=/opt/dogebox/migrations.json
-          migrations_json_tmp=$(mktemp)
-          if [ -f "$migrations_json_path" ]; then
-            if ${pkgs.jq}/bin/jq '
-              ."pre_0.9_os_flake" = (
-                (."pre_0.9_os_flake" // {})
-                + { "doNotRun": true }
-                + (if ((."pre_0.9_os_flake" // {}) | has("runs")) then {} else { "runs": 0 } end)
-              )
-            ' "$migrations_json_path" > "$migrations_json_tmp"; then
-              :
-            else
-              echo "warning: failed to merge migrations.json, leaving existing file unchanged" >&2
-              rm -f "$migrations_json_tmp"
-              migrations_json_tmp=""
-            fi
-          else
+          if [ ! -f "$migrations_json_path" ]; then
+            migrations_json_tmp=$(mktemp)
             printf '%s\n' '${migrationsJsonContent}' > "$migrations_json_tmp"
-          fi
-
-          if [ -n "$migrations_json_tmp" ]; then
             install -o dogeboxd -g dogebox -m 0640 "$migrations_json_tmp" "$migrations_json_path"
             rm -f "$migrations_json_tmp"
           fi
