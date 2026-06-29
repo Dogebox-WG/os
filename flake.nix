@@ -4,10 +4,6 @@ rec {
     flake-utils = {
       url = "github:numtide/flake-utils";
     };
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     pre-commit-hooks = {
       url = "github:cachix/pre-commit-hooks.nix";
@@ -46,7 +42,6 @@ rec {
     {
       self,
       nixpkgs,
-      nixos-generators,
       flake-utils,
       ...
     }@inputs:
@@ -196,23 +191,6 @@ rec {
           specialArgs = getSpecialArgs arch system builderType devMode devBootloader;
         };
 
-      base =
-        arch: builderType: builderSpecificModule: format:
-        let
-          system = arch + "-linux";
-          isBaseBuilder = false;
-          devMode = isOSDeveloperMode;
-          devBootloader = false;
-        in
-        nixos-generators.nixosGenerate {
-          inherit system format;
-          modules = [
-            builderSpecificModule
-          ]
-          ++ (mkConfigModules { inherit system builderType isBaseBuilder; });
-          specialArgs = getSpecialArgs arch system builderType devMode devBootloader;
-        };
-
       ## Development Scripts & tools below this point.
 
       mkDevShell =
@@ -237,7 +215,7 @@ rec {
           ];
         };
 
-      qemu-aarch64 = base "aarch64" "qemu" ./nix/builders/qemu/builder.nix "qcow";
+      qemu-aarch64 = self.nixosConfigurations.dogeboxos-qemu-aarch64.config.system.build.images.qemu;
 
       getLaunchAArch64Script =
         system:
@@ -346,13 +324,13 @@ rec {
 
       packages = {
         aarch64-linux = {
-          t6 = base "aarch64" "nanopc-t6" ./nix/builders/nanopc-t6/builder.nix "raw";
-          iso = base "aarch64" "iso" ./nix/builders/iso/builder.nix "iso";
+          t6 = self.nixosConfigurations.dogeboxos-nanopc-t6-aarch64.config.system.build.images.raw;
+          iso = self.nixosConfigurations.dogeboxos-iso-aarch64.config.system.build.images.iso;
           qemu = qemu-aarch64;
         };
         x86_64-linux = {
-          iso = base "x86_64" "iso" ./nix/builders/iso/builder.nix "iso";
-          qemu = base "x86_64" "qemu" ./nix/builders/qemu/builder.nix "qcow";
+          iso = self.nixosConfigurations.dogeboxos-iso-x86_64.config.system.build.images.iso;
+          qemu = self.nixosConfigurations.dogeboxos-qemu-x86_64.config.system.build.images.qemu;
         };
       };
 
