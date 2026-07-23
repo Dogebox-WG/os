@@ -114,19 +114,24 @@ rec {
           mkdir -p /opt/versioning/dogeboxd
           echo '${inputs.dogeboxd.rev}' > /opt/versioning/dogeboxd/rev
           echo '${inputs.dogeboxd.narHash}' > /opt/versioning/dogeboxd/hash
+          ln -sfn '${inputs.dogeboxd}' /opt/versioning/dogeboxd/source
 
           mkdir -p /opt/versioning/dkm
           echo '${inputs.dkm.rev}' > /opt/versioning/dkm/rev
           echo '${inputs.dkm.narHash}' > /opt/versioning/dkm/hash
+          ln -sfn '${inputs.dkm}' /opt/versioning/dkm/source
 
           mkdir -p /opt/versioning/dpanel
           echo '${inputs.dpanel.rev}' > /opt/versioning/dpanel/rev
           echo '${inputs.dpanel.narHash}' > /opt/versioning/dpanel/hash
+          ln -sfn '${inputs.dpanel}' /opt/versioning/dpanel/source
 
           mkdir -p /opt/dogebox
           migrations_json_path=/opt/dogebox/migrations.json
           if [ ! -f "$migrations_json_path" ]; then
-            migrations_json_tmp=$(mktemp)
+            # nixos-install can leave TMPDIR pointing at a temporary path that
+            # has already been removed before activation scripts run.
+            migrations_json_tmp=$(mktemp "$migrations_json_path.tmp.XXXXXXXXXX")
             printf '%s\n' '${migrationsJsonContent}' > "$migrations_json_tmp"
             install -o dogeboxd -g dogebox -m 0640 "$migrations_json_tmp" "$migrations_json_path"
             rm -f "$migrations_json_tmp"

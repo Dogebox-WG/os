@@ -7,6 +7,10 @@
   ...
 }:
 
+let
+  initialBootstrapInProgress = builtins.pathExists "/run/dogebox/initial-bootstrap-in-progress";
+  managedRebuildInProgress = builtins.pathExists "/run/dogebox/managed-rebuild-in-progress";
+in
 {
   environment.systemPackages = [
     pkgs.systemd
@@ -43,6 +47,7 @@
 
   systemd.tmpfiles.rules = [
     "d /opt/dogebox 0700 dogeboxd dogebox -"
+    "d /run/dogebox 0700 dogeboxd dogebox -"
 
     # Create a dev folder, and give both the shibe user and dogebox group write perms.
     "d /opt/dev 0770 shibe dogebox -"
@@ -53,6 +58,11 @@
     after = [ "systemd-networkd-wait-online.service" ];
     wants = [ "systemd-networkd-wait-online.service" ];
     wantedBy = [ "multi-user.target" ];
+
+    # Some jobs perform system switches from inside dogeboxd. Keep the owning
+    # process alive until it has persisted completion; system upgrades use a
+    # separate transient unit when a deliberate service restart is required.
+    restartIfChanged = !(initialBootstrapInProgress || managedRebuildInProgress);
 
     serviceConfig = {
       ExecStart = "/run/wrappers/bin/dogeboxd --addr 0.0.0.0 --data /opt/dogebox --nix /opt/dogebox/nix --containerlogdir /opt/dogebox/logs --port 3000 --uiport 8080 --uidir ${dogeboxd}/dpanel";
